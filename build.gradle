@@ -1,0 +1,20 @@
+group 'nerrve'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = "nerrve.NameExtractor"
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.5'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+}
