@@ -35,17 +35,6 @@ public class NameExtractor {
         writer.close()
     }
 
-    private static String getInvoiceNumber(String text) {
-        def extractedMatch = text =~ /Invoice No: ([^\s]+)/
-        extractedMatch[0][1]
-    }
-
-    private static String getName(String text) {
-        def extractedNameMatch = text =~ /(?ms)DELIVERY ADDRESS:(.*?),/
-        String extractedName = extractedNameMatch[0][1]
-        extractedName.replaceAll("[\r\n]", " ").replaceAll("  ", " ").trim()
-    }
-
     static class PDFInvoiceNameExtractor {
         File file
 
@@ -62,7 +51,12 @@ public class NameExtractor {
                 PDFTextStripper textStripper = new PDFTextStripper()
                 textStripper.sortByPosition = true
                 for (int i = 1; i <= document.getNumberOfPages(); i++) {
-                    tuples << getInvoiceNameTuple(i, textStripper, document)
+                    try {
+                        tuples << getInvoiceNameTuple(i, textStripper, document)
+                    } catch (Exception e) {
+                        println("Failed while trying to extract for page number $i")
+                        e.printStackTrace()
+                    }
                 }
             } finally {
                 document.close()
@@ -71,18 +65,23 @@ public class NameExtractor {
         }
 
         private static Tuple getInvoiceNameTuple(int pageNumber, PDFTextStripper textStripper, PDDocument document) {
-            try {
-                textStripper.startPage = pageNumber
-                textStripper.endPage = pageNumber
-                String text = textStripper.getText(document)
-                String name = getName(text)
-                String invoiceNumber = getInvoiceNumber(text)
-                new Tuple(invoiceNumber, name)
-            } catch (Exception e) {
-                println("Failed while trying to extract for page number $pageNumber")
-                e.printStackTrace()
-            }
-            throw new IllegalArgumentException()
+            textStripper.startPage = pageNumber
+            textStripper.endPage = pageNumber
+            String text = textStripper.getText(document)
+            String name = getName(text)
+            String invoiceNumber = getInvoiceNumber(text)
+            new Tuple(invoiceNumber, name)
+        }
+
+        private static String getInvoiceNumber(String text) {
+            def extractedMatch = text =~ /Invoice No: ([^\s]+)/
+            extractedMatch[0][1]
+        }
+
+        private static String getName(String text) {
+            def extractedNameMatch = text =~ /(?ms)DELIVERY ADDRESS:(.*?),/
+            String extractedName = extractedNameMatch[0][1]
+            extractedName.replaceAll("[\r\n]", " ").replaceAll("  ", " ").trim()
         }
     }
 }
