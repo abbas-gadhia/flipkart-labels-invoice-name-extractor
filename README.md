@@ -17,4 +17,8 @@ PDF label file
 Java 8
 
 ## Usage
+* Download the latest release zip file (.zip) from the "Releases section above" and extract it
+* Open up "cmd" and navigate to the extracted folder
+* cd bin
+* flipkart-invoice-name-extractor.bat -d "c:\temp"
 
