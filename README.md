@@ -1,3 +1,4 @@
+# Flipkart Customer Name Extractor
 On the flipkart seller portal, there is no option to download transaction history with the customer name
 
 For filing VAT returns, the customer name is needed.
@@ -12,7 +13,8 @@ This will save the seller the manual task of opening up each invoice and associa
 transaction history (downloadable from http://seller.flipkart.com) with the customer name mentioned inside the
 PDF label file
 
-Requirements:
+## Requirements
 Java 8
 
-Usage:
+## Usage
+
